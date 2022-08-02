@@ -1,10 +1,15 @@
 const fs = require('fs');
 const express = require('express');
+const { config } = require('process');
 const app = express();
 
 app.use(express.json());
-app.listen(8081);
+app.listen(config.port);
 
+config = fs.readFile(datafile, 'utf8', (err, data) => {
+    if (err) { err };
+});
+config = JSON.parse(config)
 datafile = 'test.txt';
 htmlfile = 'button.html';
 
