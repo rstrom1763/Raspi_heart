@@ -1,65 +1,21 @@
 const fs = require('fs');
 const express = require('express');
-const { config } = require('process');
 const app = express();
 
+port = 8081;
 app.use(express.json());
-app.listen(config.port);
+const nocache = require('nocache'); //Disable browser caching
+//const { config } = require('process'); //Honestly not sure what this was used for if at all
+app.use(nocache());
+app.use(express.static('./'));
+app.disable('etag', false); //Disable etag to help prevent http 304 issues
+app.listen(port);
+console.log('Listening on port ' + port + '... ');
 
-config = fs.readFile(datafile, 'utf8', (err, data) => {
-    if (err) { err };
-});
-config = JSON.parse(config)
-datafile = 'test.txt';
-htmlfile = 'button.html';
-
-app.get('/button', (req, res) => {
-    status = "";
-    fs.readFile(datafile, 'utf8', (err, data) => {
-        if (err) { err };
-        if (data === '1') {
-            fs.writeFile(datafile, '0', (err) => err);
-            status = 'Off';
-        } else {
-            fs.writeFile(datafile, '1', (err) => err);
-            status = 'On';
-        }
-        res.send(status);
-    });
-
-});
-
-app.get('/check', (req, res) => {
-
-    fs.readFile(datafile, 'utf8', (err, data) => {
-
-        if (err) {
-            res.send(err);
-        } else {
-            res.send(data);
-        }
-
-    });
-
-});
+//config = fs.readFileSync("./config.json", 'utf8');
+//Read config file to memory into a json
+const config = JSON.parse(JSON.stringify(fs.readFileSync("./config.json", 'utf8')))
 
 app.get('/', (req, res) => {
-
-    fs.readFile(htmlfile, 'utf8', (err, data) => {
-
-        if (err) {
-            res.send(err);
-        } else {
-            res.send(data.body);
-        }
-
-    });
-
-});
-
-app.post('/', (req, res) => {
-
-    fs.writeFile(datafile, req.body.data, (err) => err);
-    res.send(req.body.data);
-
+    res.send(fs.readFileSync('./static/index.html', 'utf8'))
 });
