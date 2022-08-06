@@ -1,8 +1,12 @@
 def rainbow_hearts():
     import requests
+    import json
     from os import system
-    url = "http://3.140.244.63:8081/check"  # "http://192.168.0.190:8081/check"
-    path = "/home/pi/Desktop/personal-projects"
+
+    config = open('./config.json','r').read()
+    config = json.loads(config)
+
+    url = ("http://"+config["server"]+":"+config["port"]+"/check")
 
     from sense_hat import SenseHat
     import time
@@ -136,14 +140,5 @@ def rainbow_hearts():
             except:
                 print "Could not connect"
                 time.sleep(1)
-            try:
-                if (count % 120) == 0:
-                    system("git -C " + path + " pull")
-                    system("sudo systemctl daemon-reload")
-                    print "Successfully updated"
-                    count = 0
-                count += 1
-            except:
-                print "Failed to update"
 
 rainbow_hearts()
