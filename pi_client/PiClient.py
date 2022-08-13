@@ -5,7 +5,7 @@ def rainbow_hearts():
     import time
     import requests
 
-    config = open('./pi_client/config.json','r').read()
+    config = open('./pi_client/client_config.json','r').read()
     config = json.loads(config)
     url = ("ws://"+config["server"]+":"+config["port"])
     from sense_hat import SenseHat
@@ -13,9 +13,14 @@ def rainbow_hearts():
     #Connect to websocket
     sio = socketio.Client()
     sio.connect(url)
-    print("Connected!\n")
-    sio.emit("example","example_data")
-    
+    #,'{"query":{"id":config["userid"]}}'
+    id_json = {"id":config['userid']}
+    id_json = json.dumps(id_json)
+    sio.emit("id",id_json)
+
+    #Send info for 
+    sio.emit('id',config['userid'])
+
     #Prepare SenseHat object and set to use dim light on led
     sense = SenseHat()
     sense.low_light = True
@@ -146,5 +151,16 @@ def rainbow_hearts():
             except:
                 print("Could not connect")
                 time.sleep(1)
+
+
+import socketio
+import time
+
+sio = socketio.Client()
+sio.connect('http://10.0.0.178:8765')
+print("connected! Mwahahaha!")
+
+for num in range(5001):
+    sio.emit("number_print",(num))
 
 rainbow_hearts()
