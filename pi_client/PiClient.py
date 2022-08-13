@@ -137,30 +137,14 @@ def rainbow_hearts():
 
     heart_colors = [red_heart, pink_heart, orange_heart, blue_heart,
                     purple_heart, aqua_heart, green_heart, yellow_heart]
-    i = True
-    sense.clear()
-    count = 1
-    while i:
-        for color in heart_colors:
-            try:
-                if requests.get(url).content == "1":
-                    sense.set_pixels(color)
-                else:
-                    sense.clear()
-                time.sleep(5)
-            except:
-                print("Could not connect")
-                time.sleep(1)
 
+    import socketio
 
-import socketio
-import time
-
-sio = socketio.Client()
-sio.connect('http://10.0.0.178:8765')
-print("connected! Mwahahaha!")
-
-for num in range(5001):
-    sio.emit("number_print",(num))
+    sio = socketio.Client()
+    try:
+        ws_url = 'ws://' + config['server'] + ':' + config['port']
+        sio.connect(ws_url)
+    except:
+        print("Could not connect to " + ws_url)
 
 rainbow_hearts()
