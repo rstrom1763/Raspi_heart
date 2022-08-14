@@ -1,3 +1,5 @@
+
+//Function to toggle the status of the heart and show the new status on the html page
 function toggle() {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {
@@ -23,3 +25,36 @@ function toggle() {
         console.log(error)
     }
 }
+
+//Function to show status of the heart on the page
+function set_initial_status() {
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (request.readyState === request.DONE) {
+            if (request.status === 200) {
+                document.getElementById('status').innerHTML = request.responseText
+            }
+            else if (request.status === 404) {
+                document.getElementById('status').innerHTML = "ERROR"
+            }
+            else {
+                console.log("Some other error happened... ")
+            }
+        }
+    }
+    try {
+        request.open("GET", 'http://' + location.host + '/getstatus', true);
+        request.send();
+        console.log("Got status over http")
+    } catch (error) {
+        request.open("GET", 'https://' + location.host + '/getstatus', true);
+        request.send();
+        console.log("Got status over https")
+    }
+}
+
+//When the page loads, trigger set_initial_status()
+//This will show on the page what the status of the heart is at that moment
+window.addEventListener('load', (event) => {
+    set_initial_status();
+});

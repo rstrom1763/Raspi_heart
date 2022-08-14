@@ -27,19 +27,22 @@ app.get('/', (req, res) => {
 });
 
 app.get('/getstatus', (req, res) => {
-    res.send(heart_status);
-});
-
-app.get('/toggle', (req, res) => {
-    heart_status = !heart_status;
-    console.log(heart_status)
     if (heart_status) {
         res.send("Status: ON ");
     }
     if (!heart_status) {
         res.send("Status: OFF ");
     }
-    //res.send(sockets[0].id);
+});
+
+app.get('/toggle', (req, res) => {
+    heart_status = !heart_status;
+    if (heart_status) {
+        res.send("Status: ON ");
+    }
+    if (!heart_status) {
+        res.send("Status: OFF ");
+    }
 });
 
 //For example only. Needs to be reworked for functionality
