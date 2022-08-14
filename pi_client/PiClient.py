@@ -1,6 +1,5 @@
 def rainbow_hearts():
     import json
-    from os import system
     import socketio
     import time
     import requests
