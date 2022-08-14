@@ -43,12 +43,17 @@ app.get('/toggle', (req, res) => {
     if (!heart_status) {
         res.send("Status: OFF ");
     }
+
+    io.sockets.emit('setstatus', heart_status)
+
 });
 
 //For example only. Needs to be reworked for functionality
 io.on("connection", (socket) => {
-    sockets.push(socket);
-    console.log(socket.handshake.query.id)
+    socket.on("getstatus", () => {
+        socket.emit("setstatus", heart_status)
+    });
+
     socket.on("disconnect", () => {
 
         const index = sockets.indexOf(socket);

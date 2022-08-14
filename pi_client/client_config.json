@@ -1,1 +1,7 @@
-{"server": "10.0.0.178", "port": "8081", "protocol": "http", "userid": "adfadfadhfkjhafiv"}
+{
+    "server": "10.0.0.89",
+    "port": "8081",
+    "ws_port": "8765",
+    "protocol": "http",
+    "userid": "adfadfadhfkjhafiv"
+}

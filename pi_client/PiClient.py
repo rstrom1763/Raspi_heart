@@ -2,23 +2,15 @@ def rainbow_hearts():
     import json
     import socketio
     import time
-    import requests
+    from sense_hat import SenseHat
+    import random
+
 
     config = open('./pi_client/client_config.json','r').read()
     config = json.loads(config)
-    url = ("ws://"+config["server"]+":"+config["port"])
-    from sense_hat import SenseHat
-
-    #Connect to websocket
-    sio = socketio.Client()
-    sio.connect(url)
-    #,'{"query":{"id":config["userid"]}}'
-    id_json = {"id":config['userid']}
-    id_json = json.dumps(id_json)
-    sio.emit("id",id_json)
-
-    #Send info for 
-    sio.emit('id',config['userid'])
+    ws_url = ("ws://"+config["server"]+":"+config["ws_port"])
+    global heart_status
+    heart_status = True
 
     #Prepare SenseHat object and set to use dim light on led
     sense = SenseHat()
@@ -137,13 +129,41 @@ def rainbow_hearts():
     heart_colors = [red_heart, pink_heart, orange_heart, blue_heart,
                     purple_heart, aqua_heart, green_heart, yellow_heart]
 
-    import socketio
-
+    #Create socketio client object
     sio = socketio.Client()
+
+    #Define event listener(s) for socket
+
+    #Set the heart status to the value given by the server
+    @sio.on('setstatus')
+    def on_message(data):
+        global heart_status
+        heart_status = data
+        if (heart_status):
+            sense.set_pixels(random.choice(heart_colors))
+        if (not heart_status):
+            sense.clear()
+
+
+    #Connect to the websocket
     try:
-        ws_url = 'ws://' + config['server'] + ':' + config['port']
         sio.connect(ws_url)
+        print("Connected to " + ws_url)
+        sio.emit('getstatus','')
     except:
         print("Could not connect to " + ws_url)
+        exit()
+
+    #Loop through the colors if the status is True
+    while True:
+        print('test')
+        for color in heart_colors:
+            if heart_status == True:
+                color = random.choice(heart_colors)
+                sense.set_pixels(color)
+            if heart_status == False:
+                sense.clear()
+            time.sleep(1)
+
 
 rainbow_hearts()
