@@ -30,9 +30,16 @@ app.get('/getstatus', (req, res) => {
     res.send(heart_status);
 });
 
-app.post('/toggle', (req, res) => {
+app.get('/toggle', (req, res) => {
     heart_status = !heart_status;
-    res.send(sockets[0].id);
+    console.log(heart_status)
+    if (heart_status) {
+        res.send("Status: ON ");
+    }
+    if (!heart_status) {
+        res.send("Status: OFF ");
+    }
+    //res.send(sockets[0].id);
 });
 
 //For example only. Needs to be reworked for functionality
@@ -43,7 +50,7 @@ io.on("connection", (socket) => {
 
         const index = sockets.indexOf(socket);
         if (index > -1) { // only splice array when item is found
-        sockets.splice(index, 1); // 2nd parameter means remove one item only
+            sockets.splice(index, 1); // 2nd parameter means remove one item only
         };
 
     });
