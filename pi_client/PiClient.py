@@ -156,7 +156,6 @@ def rainbow_hearts():
 
     #Loop through the colors if the status is True
     while True:
-        print('test')
         for color in heart_colors:
             if heart_status == True:
                 color = random.choice(heart_colors)
