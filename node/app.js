@@ -16,8 +16,6 @@ app.disable('etag', false); //Disable etag to help prevent http 304 issues
 app.listen(config.port);
 console.log('Listening on port ' + config.port + '... ');
 heart_status = false;
-socket_ids = []
-sockets = []
 
 //config = fs.readFileSync("./config.json", 'utf8');
 //Read config file to memory into a json
@@ -29,10 +27,10 @@ app.get('/', (req, res) => {
 app.get('/getstatus', (req, res) => {
     if (heart_status) {
         res.send("Status: ON ");
-    }
+    };
     if (!heart_status) {
         res.send("Status: OFF ");
-    }
+    };
 });
 
 app.get('/toggle', (req, res) => {
@@ -45,16 +43,10 @@ app.get('/toggle', (req, res) => {
     }
 
     io.sockets.emit('setstatus', heart_status)
-
 });
 
-//Route to take input from text box and set the raspberry pi to show that message
-app.post('/settext', (req, res) => {
-
-});
-
-//For example only. Needs to be reworked for functionality
 io.on("connection", (socket) => {
+
     socket.on("getstatus", () => {
         socket.emit("setstatus", heart_status)
     });
@@ -65,6 +57,8 @@ io.on("connection", (socket) => {
         if (index > -1) { // only splice array when item is found
             sockets.splice(index, 1); // 2nd parameter means remove one item only
         };
+
     });
+
 });
 
