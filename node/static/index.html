@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+<html>
+<title>Raspi Heart</title>
+
+<head>
+  <link rel="stylesheet" href="./static/app.css" />
+  <link rel="icon" type="image/x-icon" href="./static/heart.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+</head>
+
+<script type="text/javascript" src="./static/form.js"></script>
+
+<body>
+  <h1>Toggle Heart Status</h1><br>
+  <button onclick="toggle()" id="button">Toggle</button><br><br>
+  <div id="status" onload="set_initial_status();"></div>
+</body>
+
+</html>

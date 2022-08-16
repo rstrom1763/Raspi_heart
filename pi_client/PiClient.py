@@ -1,12 +1,18 @@
 def rainbow_hearts():
-    import requests
-    from os import system
-    url = "http://3.140.244.63:8081/check"  # "http://192.168.0.190:8081/check"
-    path = "/home/pi/Desktop/personal-projects"
-
-    from sense_hat import SenseHat
+    import json
+    import socketio
     import time
+    from sense_hat import SenseHat
+    import random
 
+
+    config = open('./pi_client/client_config.json','r').read()
+    config = json.loads(config)
+    ws_url = ("ws://"+config["server"]+":"+config["ws_port"])
+    global heart_status
+    heart_status = True
+
+    #Prepare SenseHat object and set to use dim light on led
     sense = SenseHat()
     sense.low_light = True
 
@@ -122,28 +128,41 @@ def rainbow_hearts():
 
     heart_colors = [red_heart, pink_heart, orange_heart, blue_heart,
                     purple_heart, aqua_heart, green_heart, yellow_heart]
-    i = True
-    sense.clear()
-    count = 1
-    while i:
+
+    #Create socketio client object
+    sio = socketio.Client()
+
+    #Define event listener(s) for socket
+
+    #Set the heart status to the value given by the server
+    @sio.on('setstatus')
+    def on_message(data):
+        global heart_status
+        heart_status = data
+        if (heart_status):
+            sense.set_pixels(random.choice(heart_colors))
+        if (not heart_status):
+            sense.clear()
+
+
+    #Connect to the websocket
+    try:
+        sio.connect(ws_url)
+        print("Connected to " + ws_url)
+        sio.emit('getstatus','')
+    except:
+        print("Could not connect to " + ws_url)
+        exit()
+
+    #Loop through the colors if the status is True
+    while True:
         for color in heart_colors:
-            try:
-                if requests.get(url).content == "1":
-                    sense.set_pixels(color)
-                else:
-                    sense.clear()
-                time.sleep(5)
-            except:
-                print "Could not connect"
-                time.sleep(1)
-            try:
-                if (count % 120) == 0:
-                    system("git -C " + path + " pull")
-                    system("sudo systemctl daemon-reload")
-                    print "Successfully updated"
-                    count = 0
-                count += 1
-            except:
-                print "Failed to update"
+            if heart_status == True:
+                color = random.choice(heart_colors)
+                sense.set_pixels(color)
+            if heart_status == False:
+                sense.clear()
+            time.sleep(1)
+
 
 rainbow_hearts()
