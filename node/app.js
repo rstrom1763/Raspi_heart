@@ -48,6 +48,11 @@ app.get('/toggle', (req, res) => {
 
 });
 
+//Route to take input from text box and set the raspberry pi to show that message
+app.post('/settext', (req, res) => {
+
+});
+
 //For example only. Needs to be reworked for functionality
 io.on("connection", (socket) => {
     socket.on("getstatus", () => {
@@ -60,7 +65,6 @@ io.on("connection", (socket) => {
         if (index > -1) { // only splice array when item is found
             sockets.splice(index, 1); // 2nd parameter means remove one item only
         };
-
     });
 });
 

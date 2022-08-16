@@ -1,3 +1,7 @@
+from cgitb import text
+from email import message
+
+
 def rainbow_hearts():
     import json
     import socketio
@@ -11,6 +15,10 @@ def rainbow_hearts():
     ws_url = ("ws://"+config["server"]+":"+config["ws_port"])
     global heart_status
     heart_status = True
+    global text_status
+    text_status = False
+    global string_message
+    string_message = ""
 
     #Prepare SenseHat object and set to use dim light on led
     sense = SenseHat()
@@ -44,6 +52,8 @@ def rainbow_hearts():
 
     # empty (no color)
     e = (0, 0, 0)
+
+    colors = [r,p,o,y,g,a,b,pr,e]
 
     red_heart = [
         e, e, e, e, e, e, e, e,
@@ -143,7 +153,14 @@ def rainbow_hearts():
             sense.set_pixels(random.choice(heart_colors))
         if (not heart_status):
             sense.clear()
-
+    @sio.on('set_text')
+    def on_message(data):
+        global heart_status
+        heart_status = False
+        global text_status
+        text_status = True
+        global string_message
+        string_message = data
 
     #Connect to the websocket
     try:
@@ -160,9 +177,12 @@ def rainbow_hearts():
             if heart_status == True:
                 color = random.choice(heart_colors)
                 sense.set_pixels(color)
-            if heart_status == False:
+            if text_status == True:
+                sense.show_message(string_message,text_colour=random.choice(colors),scroll_speed=.075)
+            if heart_status == False and text_status == False:
                 sense.clear()
             time.sleep(1)
+
 
 
 rainbow_hearts()
