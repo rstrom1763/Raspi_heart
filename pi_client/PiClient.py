@@ -1,7 +1,3 @@
-from cgitb import text
-from email import message
-
-
 def rainbow_hearts():
     import json
     import socketio
@@ -9,16 +5,13 @@ def rainbow_hearts():
     from sense_hat import SenseHat
     import random
 
-
     config = open('./pi_client/client_config.json','r').read()
     config = json.loads(config)
     ws_url = ("ws://"+config["server"]+":"+config["ws_port"])
     global heart_status
     heart_status = True
-    global text_status
-    text_status = False
-    global string_message
-    string_message = ""
+    global text_value
+    text_value = False
 
     #Prepare SenseHat object and set to use dim light on led
     sense = SenseHat()
@@ -147,20 +140,18 @@ def rainbow_hearts():
     #Set the heart status to the value given by the server
     @sio.on('setstatus')
     def on_message(data):
+        print(data)
         global heart_status
-        heart_status = data
+        heart_status = data['heart_status']
+        global text_value
+        text_value = data['text_value']
+
         if (heart_status):
             sense.set_pixels(random.choice(heart_colors))
-        if (not heart_status):
+        if (not heart_status and text_value == False):
             sense.clear()
-    @sio.on('set_text')
-    def on_message(data):
-        global heart_status
-        heart_status = False
-        global text_status
-        text_status = True
-        global string_message
-        string_message = data
+        if (text_value != False and not heart_status):
+            sense.clear()
 
     #Connect to the websocket
     try:
@@ -174,15 +165,12 @@ def rainbow_hearts():
     #Loop through the colors if the status is True
     while True:
         for color in heart_colors:
-            if heart_status == True:
-                color = random.choice(heart_colors)
+            if heart_status == True and not text_value:
                 sense.set_pixels(color)
-            if text_status == True:
-                sense.show_message(string_message,text_colour=random.choice(colors),scroll_speed=.075)
-            if heart_status == False and text_status == False:
+            if heart_status == False and text_value != False:
+                sense.show_message(text_value,text_colour=r,scroll_speed=.075)
+            if heart_status == False and text_value == False:
                 sense.clear()
             time.sleep(1)
-
-
 
 rainbow_hearts()

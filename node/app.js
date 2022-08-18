@@ -16,6 +16,7 @@ app.disable('etag', false); //Disable etag to help prevent http 304 issues
 app.listen(config.port);
 console.log('Listening on port ' + config.port + '... ');
 heart_status = false;
+text_value = false;
 
 //config = fs.readFileSync("./config.json", 'utf8');
 //Read config file to memory into a json
@@ -26,38 +27,41 @@ app.get('/', (req, res) => {
 
 app.get('/getstatus', (req, res) => {
     if (heart_status) {
-        res.send("Status: ON ");
+        res.send("Status: Heart ON ");
     };
-    if (!heart_status) {
-        res.send("Status: OFF ");
+    if (!heart_status && text_value === false) {
+        res.send("Status: Heart OFF ");
+    };
+    if (!heart_status && text_value != false) {
+        res.send("Showing message: " + text_value)
     };
 });
 
 app.get('/toggle', (req, res) => {
     heart_status = !heart_status;
     if (heart_status) {
-        res.send("Status: ON ");
+        res.send("Status: Heart ON ");
     }
     if (!heart_status) {
-        res.send("Status: OFF ");
+        res.send("Status: Heart OFF ");
     }
+    text_value = false
 
-    io.sockets.emit('setstatus', heart_status)
+    io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
+});
+
+app.post('/setmessage', (req, res) => {
+    console.log(req.headers.text_value)
+    text_value = req.headers.text_value
+    heart_status = false
+    res.send("Showing message: " + text_value)
+    io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
 });
 
 io.on("connection", (socket) => {
 
     socket.on("getstatus", () => {
-        socket.emit("setstatus", heart_status)
-    });
-
-    socket.on("disconnect", () => {
-
-        const index = sockets.indexOf(socket);
-        if (index > -1) { // only splice array when item is found
-            sockets.splice(index, 1); // 2nd parameter means remove one item only
-        };
-
+        socket.emit("setstatus", { "heart_status": heart_status, "text_value": text_value });
     });
 
 });
