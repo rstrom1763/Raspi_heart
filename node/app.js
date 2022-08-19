@@ -51,7 +51,6 @@ app.get('/toggle', (req, res) => {
 });
 
 app.post('/setmessage', (req, res) => {
-    console.log(req.headers.text_value)
     text_value = req.headers.text_value
     heart_status = false
     res.send("Showing message: " + text_value)

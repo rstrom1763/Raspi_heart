@@ -140,7 +140,6 @@ def rainbow_hearts():
     #Set the heart status to the value given by the server
     @sio.on('setstatus')
     def on_message(data):
-        print(data)
         global heart_status
         heart_status = data['heart_status']
         global text_value
@@ -165,10 +164,10 @@ def rainbow_hearts():
     #Loop through the colors if the status is True
     while True:
         for color in heart_colors:
-            if heart_status == True and not text_value:
+            if heart_status == True and text_value == False:
                 sense.set_pixels(color)
             if heart_status == False and text_value != False:
-                sense.show_message(text_value,text_colour=r,scroll_speed=.075)
+                sense.show_message(text_value,text_colour=r,scroll_speed=.04)
             if heart_status == False and text_value == False:
                 sense.clear()
             time.sleep(1)
