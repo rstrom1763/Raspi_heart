@@ -16,7 +16,18 @@
   <button onclick="toggle()" id="button">Toggle Heart</button><br><br>
   <div id="status" onload="set_initial_status();"></div><br /><br />
   <input type="text" name="input" id="input" onfocus="this.value=''" value="Enter Message" /><br /><br />
-  <button onclick="set_text()" id="button">Send!</button><br /><br />
+  <button onclick="set_text()" id="set_text">Send!</button><br /><br />
 </body>
+
+<script>
+  var inputText = document.getElementById("input");
+  inputText.addEventListener("keyup", function (event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      document.getElementById("set_text").click();
+      document.getElementById("set_text").focus();
+    }
+  });
+</script>
 
 </html>
