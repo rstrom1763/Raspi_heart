@@ -46,8 +46,6 @@ def rainbow_hearts():
     # empty (no color)
     e = (0, 0, 0)
 
-    colors = [r,p,o,y,g,a,b,pr,e]
-
     red_heart = [
         e, e, e, e, e, e, e, e,
         e, r, r, e, r, r, e, e,
@@ -166,9 +164,9 @@ def rainbow_hearts():
         for color in heart_colors:
             if heart_status == True and text_value == False:
                 sense.set_pixels(color)
-            if heart_status == False and text_value != False:
+            elif heart_status == False and text_value != False:
                 sense.show_message(text_value,text_colour=r,scroll_speed=.04)
-            if heart_status == False and text_value == False:
+            elif heart_status == False and text_value == False:
                 sense.clear()
             time.sleep(1)
 
