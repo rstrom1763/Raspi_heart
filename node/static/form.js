@@ -6,6 +6,13 @@ function toggle() {
         if (request.readyState === request.DONE) {
             if (request.status === 200) {
                 document.getElementById('status').innerHTML = request.responseText
+                if (request.responseText.includes("Heart ON")) {
+                    element = document.getElementById('wrapper')
+                    element.classList.add('wrapper')
+                } else if (request.responseText.includes("Heart OFF")) {
+                    element = document.getElementById('wrapper')
+                    element.classList.remove('wrapper')
+                }
             }
             if (request.status === 404) {
                 document.getElementById('status').innerHTML = "ERROR"
@@ -33,6 +40,13 @@ function set_initial_status() {
         if (request.readyState === request.DONE) {
             if (request.status === 200) {
                 document.getElementById('status').innerHTML = request.responseText
+                if (request.responseText.includes("Heart ON")) {
+                    element = document.getElementById('wrapper')
+                    element.classList.add('wrapper')
+                } else if (request.responseText.includes("Heart OFF")) {
+                    element = document.getElementById('wrapper')
+                    element.classList.remove('wrapper')
+                }
             }
             else if (request.status === 404) {
                 document.getElementById('status').innerHTML = "ERROR"
@@ -60,6 +74,8 @@ function set_text() {
         if (request.readyState === request.DONE) {
             if (request.status === 200) {
                 document.getElementById('status').innerHTML = request.responseText
+                element = document.getElementById('wrapper')
+                element.classList.remove('wrapper')
             }
             else if (request.status === 404) {
                 document.getElementById('status').innerHTML = "ERROR"
@@ -71,14 +87,14 @@ function set_text() {
     }
     try {
         request.open("POST", 'http://' + location.host + '/setmessage', true);
-        request.setRequestHeader("content-type","text/plain");
-        request.setRequestHeader("text_value",document.getElementById("input").value)
+        request.setRequestHeader("content-type", "text/plain");
+        request.setRequestHeader("text_value", document.getElementById("input").value)
         request.send();
         console.log("Sent message over http")
     } catch (error) {
         request.open("POST", 'https://' + location.host + '/setmessage', true);
-        request.setRequestHeader("content-type","text/plain");
-        request.setRequestHeader("text_value",document.getElementById("input").value)
+        request.setRequestHeader("content-type", "text/plain");
+        request.setRequestHeader("text_value", document.getElementById("input").value)
         request.send();
         console.log("Sent message over https")
     }
