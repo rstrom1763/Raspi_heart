@@ -17,7 +17,7 @@ def rainbow_hearts():
     sense = SenseHat()
     sense.low_light = True
 
-    # Create variables to hold each RGB color we want to use
+    # Create variables to hold each RGB colors
 
     # red
     r = (255, 0, 0)
@@ -127,6 +127,7 @@ def rainbow_hearts():
         e, e, e, pr, e, e, e, e
     ]
 
+    #List of all of the heart colors
     heart_colors = [red_heart, pink_heart, orange_heart, blue_heart,
                     purple_heart, aqua_heart, green_heart, yellow_heart]
 
