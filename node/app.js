@@ -50,6 +50,7 @@ app.get('/toggle', (req, res) => {
     //Text will always be false since this toggles the heart
     text_value = false
 
+    //Send the new status to the Pi so it can act on the new status
     io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
 });
 
