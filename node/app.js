@@ -1,6 +1,7 @@
 const fs = require('fs');
 const express = require('express');
 const app = express();
+const https = require('https')
 
 //Read config into memory and parse as json for use by program
 const config = JSON.parse(fs.readFileSync("./config.json", 'utf8'));
@@ -14,8 +15,14 @@ const nocache = require('nocache'); //Disable browser caching
 app.use(nocache());
 app.use(express.static('./'));
 app.disable('etag', false); //Disable etag to help prevent http 304 issues
-app.listen(config.port);
-console.log('Listening on port ' + config.port + '... ');
+//app.listen(config.port);
+https.createServer({
+    key: fs.readFileSync("key.pem"),
+    cert: fs.readFileSync("cert.pem")
+}, app).listen(config.port, () => {
+    console.log("Listening on port " + config.port + "...")
+});
+
 heart_status = false;
 text_value = false;
 

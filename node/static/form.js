@@ -20,7 +20,7 @@ function toggle() {
         }
     }
     try {
-        request.open("GET", 'http://' + location.host + '/toggle/', true);
+        request.open("GET", 'https://' + location.host + '/toggle/', true);
     } catch (error) {
         console.log(error)
         request.open("GET", 'https://' + location.host + '/toggle/', true);
@@ -65,7 +65,7 @@ function set_initial_status() {
         }
     }
     try {
-        request.open("GET", 'http://' + location.host + '/getstatus', true);
+        request.open("GET", 'https://' + location.host + '/getstatus', true);
         request.send();
         console.log("Got status over http")
     } catch (error) {
@@ -103,7 +103,7 @@ function set_text() {
     try {
 
         //Try to send the text status over http by default
-        request.open("POST", 'http://' + location.host + '/setmessage', true);
+        request.open("POST", 'https://' + location.host + '/setmessage', true);
         request.setRequestHeader("content-type", "text/plain");
         request.setRequestHeader("text_value", document.getElementById("input").value)
         request.send();
