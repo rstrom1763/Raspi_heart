@@ -65,8 +65,17 @@ app.get('/toggle', (req, res) => {
 app.post('/setmessage', (req, res) => {
     text_value = req.headers.text_value
     heart_status = false
+    
+    //Send the gui the status message to display
     res.send("Showing message: " + text_value)
+
+    //Send new message to the pi through the websocket connection
     io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
+
+    //Write message to log file
+    fs.appendFile('./messages.log', req.headers.text_value + '\n', (err) => {
+        if (err) { err };
+    });
 });
 
 //Web socket responses are defined in here
