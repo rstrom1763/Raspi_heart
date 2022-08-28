@@ -23,7 +23,6 @@ function toggle() {
         request.open("GET", 'https://' + location.host + '/toggle/', true);
     } catch (error) {
         console.log(error)
-        request.open("GET", 'https://' + location.host + '/toggle/', true);
     }
 
     try {
@@ -67,11 +66,9 @@ function set_initial_status() {
     try {
         request.open("GET", 'https://' + location.host + '/getstatus', true);
         request.send();
-        console.log("Got status over http")
-    } catch (error) {
-        request.open("GET", 'https://' + location.host + '/getstatus', true);
-        request.send();
         console.log("Got status over https")
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -102,21 +99,16 @@ function set_text() {
     }
     try {
 
-        //Try to send the text status over http by default
-        request.open("POST", 'https://' + location.host + '/setmessage', true);
-        request.setRequestHeader("content-type", "text/plain");
-        request.setRequestHeader("text_value", document.getElementById("input").value)
-        request.send();
-        console.log("Sent message over http")
-
-    } catch (error) {
-
-        //If http fails try https. Eventually will use https only
+        //Try to send the text status
         request.open("POST", 'https://' + location.host + '/setmessage', true);
         request.setRequestHeader("content-type", "text/plain");
         request.setRequestHeader("text_value", document.getElementById("input").value)
         request.send();
         console.log("Sent message over https")
+
+    } catch (error) {
+
+        console.log(error);
 
     }
 };
