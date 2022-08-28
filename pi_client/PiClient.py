@@ -5,18 +5,19 @@ def rainbow_hearts():
     from sense_hat import SenseHat
     import random
 
-
     config = open('./pi_client/client_config.json','r').read()
     config = json.loads(config)
     ws_url = ("ws://"+config["server"]+":"+config["ws_port"])
     global heart_status
     heart_status = True
+    global text_value
+    text_value = False
 
     #Prepare SenseHat object and set to use dim light on led
     sense = SenseHat()
     sense.low_light = True
 
-    # Create variables to hold each RGB color we want to use
+    # Create variables to hold each RGB colors
 
     # red
     r = (255, 0, 0)
@@ -126,6 +127,7 @@ def rainbow_hearts():
         e, e, e, pr, e, e, e, e
     ]
 
+    #List of all of the heart colors
     heart_colors = [red_heart, pink_heart, orange_heart, blue_heart,
                     purple_heart, aqua_heart, green_heart, yellow_heart]
 
@@ -138,12 +140,16 @@ def rainbow_hearts():
     @sio.on('setstatus')
     def on_message(data):
         global heart_status
-        heart_status = data
+        heart_status = data['heart_status']
+        global text_value
+        text_value = data['text_value']
+
         if (heart_status):
             sense.set_pixels(random.choice(heart_colors))
-        if (not heart_status):
+        if (not heart_status and text_value == False):
             sense.clear()
-
+        if (text_value != False and not heart_status):
+            sense.clear()
 
     #Connect to the websocket
     try:
@@ -157,12 +163,12 @@ def rainbow_hearts():
     #Loop through the colors if the status is True
     while True:
         for color in heart_colors:
-            if heart_status == True:
-                color = random.choice(heart_colors)
+            if heart_status == True and text_value == False:
                 sense.set_pixels(color)
-            if heart_status == False:
+            elif heart_status == False and text_value != False:
+                sense.show_message(text_value,text_colour=r,scroll_speed=.04)
+            elif heart_status == False and text_value == False:
                 sense.clear()
             time.sleep(1)
-
 
 rainbow_hearts()
