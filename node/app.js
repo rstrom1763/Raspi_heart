@@ -15,10 +15,19 @@ const nocache = require('nocache'); //Disable browser caching
 app.use(nocache());
 app.use(express.static('./'));
 app.disable('etag', false); //Disable etag to help prevent http 304 issues
-//app.listen(config.port);
+
+//If the Letsencrypt files exist use those else use the self generated pem files
+if (fs.existsSync("server.key") && fs.existsSync("server.crt")) {
+    certfile = fs.readFileSync("server.crt")
+    keyfile = fs.readFileSync("server.key")
+} else {
+    keyfile = fs.readFileSync("key.pem")
+    certfile = fs.readFileSync("cert.pem")
+}
+
 https.createServer({
-    key: fs.readFileSync("key.pem"),
-    cert: fs.readFileSync("cert.pem")
+    key: keyfile,
+    cert: certfile
 }, app).listen(config.port, () => {
     console.log("Listening on port " + config.port + "...")
 });
@@ -65,7 +74,7 @@ app.get('/toggle', (req, res) => {
 app.post('/setmessage', (req, res) => {
     text_value = req.headers.text_value
     heart_status = false
-    
+
     //Send the gui the status message to display
     res.send("Showing message: " + text_value)
 
