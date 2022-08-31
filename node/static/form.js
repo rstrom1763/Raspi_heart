@@ -102,7 +102,7 @@ function set_text() {
         //Try to send the text status
         request.open("POST", 'https://' + location.host + '/setmessage', true);
         request.setRequestHeader("content-type", "text/plain");
-        request.setRequestHeader("text_value", document.getElementById("input").value)
+        request.setRequestHeader("text_value", document.getElementById("input").value);
         request.send();
         console.log("Sent message over https")
 
