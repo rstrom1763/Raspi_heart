@@ -1,5 +1,4 @@
 {
-    "server":"",
     "port":"8081",
     "socket_port":"8765"
 }
