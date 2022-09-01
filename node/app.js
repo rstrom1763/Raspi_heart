@@ -84,11 +84,14 @@ app.post('/setmessage', (req, res) => {
 });
 
 app.post('/sms', (req, res) => {
-    console.log(req.body.Body)
     text_value = req.body.Body
     heart_status = false
-    io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
-    res.send("Success!")
+    if (text_value.length <= 70) {
+        io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
+        res.send("Success!")
+    } else if (text_value.length > 70) {
+        res.send("Exceeded character limit of 70 :(")
+    }
 });
 
 //Web socket responses are defined in here

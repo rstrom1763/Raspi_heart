@@ -1,0 +1,8 @@
+version: "3"
+services:
+  raspi_heart:
+    image: raspi_heart
+    ports:
+      - "8081:8081"
+      - "8765:8765"
+    restart: always
