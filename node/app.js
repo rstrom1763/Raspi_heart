@@ -2,6 +2,7 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 const https = require('https')
+const { urlencoded } = require('body-parser');
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 //Read config into memory and parse as json for use by program
@@ -12,6 +13,7 @@ const { Server } = require("socket.io");
 const io = new Server(config.socket_port);
 
 app.use(express.json());
+app.use(urlencoded({ extended: false }));
 const nocache = require('nocache'); //Disable browser caching
 app.use(nocache());
 app.use(express.static('./'));
