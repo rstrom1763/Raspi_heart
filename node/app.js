@@ -38,13 +38,13 @@ app.get('/', (req, res) => {
 
 //Sends the current status of the pi
 app.get('/getstatus', (req, res) => {
-    if (heart_status) {
+    if (heart_status === true) {
         res.send("Status: Heart ON ");
     };
-    if (!heart_status && text_value === false) {
+    if (heart_status === false && text_value === false) {
         res.send("Status: Heart OFF ");
     };
-    if (!heart_status && text_value != false) {
+    if (heart_status === false && text_value !== false) {
         res.send("Showing message: " + text_value)
     };
 });
@@ -55,7 +55,7 @@ app.get('/toggle', (req, res) => {
     if (heart_status) {
         res.send("Status: Heart ON ");
     }
-    if (!heart_status) {
+    if (heart_status === false) {
         res.send("Status: Heart OFF ");
     }
 
@@ -66,13 +66,18 @@ app.get('/toggle', (req, res) => {
     io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
 });
 
+//Route to turn the pi message or heart off
+app.post('/off', (req, res) => {
+    heart_status = false;
+    text_value = false;
+    io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
+    res.send('Success')
+});
+
 //Sets that value of the message to be shown
 app.post('/setmessage', (req, res) => {
     text_value = req.headers.text_value
     heart_status = false
-
-    //Send the gui the status message to display
-    res.send("Showing message: " + text_value)
 
     //Send new message to the pi through the websocket connection
     io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
@@ -81,6 +86,9 @@ app.post('/setmessage', (req, res) => {
     fs.appendFile('./messages.log', req.headers.text_value + '\n', (err) => {
         if (err) { err };
     });
+
+    //Send the gui the status message to display
+    res.send("Showing message: " + text_value)
 });
 
 app.post('/sms', (req, res) => {
