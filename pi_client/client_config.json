@@ -1,7 +1,4 @@
 {
     "server": "",
-    "port": "",
-    "ws_port": "",
-    "protocol": "http",
-    "userid": ""
+    "ws_port": ""
 }
