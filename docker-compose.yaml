@@ -2,18 +2,9 @@ version: "3"
 services:
   raspi_heart:
     image: raspi_heart
+    container_name: raspi_heart_server
     ports:
       - "8081:8081"
       - "8765:8765"
     restart: always
-
   mongo:
-  image: mongo
-  restart: always
-  ports:
-    - "27017:27017"
-  volumes:
-    - ./mongodata/:/
-  environment:
-    MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
-    MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
