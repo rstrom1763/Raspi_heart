@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const https = require('https')
 const { urlencoded } = require('body-parser');
+const mongoose = require('mongoose');
 
 //Read config into memory and parse as json for use by program
 const config = JSON.parse(fs.readFileSync("./config.json", 'utf8'));
