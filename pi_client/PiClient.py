@@ -5,7 +5,7 @@ def rainbow_hearts():
     from sense_hat import SenseHat
     import random
 
-    config = open('./pi_client/client_config.json','r').read()
+    config = open('./pi_client/client_config.json', 'r').read()
     config = json.loads(config)
     ws_url = ("ws://"+config["server"]+":"+config["ws_port"])
     global heart_status
@@ -13,7 +13,7 @@ def rainbow_hearts():
     global text_value
     text_value = False
 
-    #Prepare SenseHat object and set to use dim light on led
+    # Prepare SenseHat object and set to use dim light on led
     sense = SenseHat()
     sense.low_light = True
 
@@ -127,16 +127,16 @@ def rainbow_hearts():
         e, e, e, pr, e, e, e, e
     ]
 
-    #List of all of the heart colors
+    # List of all of the heart colors
     heart_colors = [red_heart, pink_heart, orange_heart, blue_heart,
                     purple_heart, aqua_heart, green_heart, yellow_heart]
 
-    #Create socketio client object
+    # Create socketio client object
     sio = socketio.Client()
 
-    #Define event listener(s) for socket
+    # Define event listener(s) for socket
 
-    #Set the heart status to the value given by the server
+    # Set the heart status to the value given by the server
     @sio.on('setstatus')
     def on_message(data):
         global heart_status
@@ -151,24 +151,25 @@ def rainbow_hearts():
         if (text_value != False and not heart_status):
             sense.clear()
 
-    #Connect to the websocket
+    # Connect to the websocket
     try:
         sio.connect(ws_url)
         print("Connected to " + ws_url)
-        sio.emit('getstatus','')
+        sio.emit('getstatus', '')
     except:
         print("Could not connect to " + ws_url)
         exit()
 
-    #Loop through the colors if the status is True
+    # Loop through the colors if the status is True
     while True:
         for color in heart_colors:
             if heart_status == True and text_value == False:
                 sense.set_pixels(color)
             elif heart_status == False and text_value != False:
-                sense.show_message(text_value,text_colour=r,scroll_speed=.04)
+                sense.show_message(text_value, text_colour=r, scroll_speed=.04)
             elif heart_status == False and text_value == False:
                 sense.clear()
             time.sleep(1)
+
 
 rainbow_hearts()
