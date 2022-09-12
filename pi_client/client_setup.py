@@ -2,10 +2,10 @@ import json
 
 config = open('./pi_client/client_config.json', 'w')
 
-server = input('Server: ')
-port = input('Port: ')
-protocol = input('Protocol: ')
-userid = input('Userid: ')
+server = input('Server: ').strip()
+port = input('Port: ').strip()
+protocol = input('Protocol: ').strip()
+userid = input('Userid: ').strip()
 
 dict = {'server': server,
         'port': port,
