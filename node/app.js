@@ -45,7 +45,7 @@ app.get('/getstatus', (req, res) => {
         res.send("Status: Heart OFF ");
     };
     if (heart_status === false && text_value !== false) {
-        res.send("Showing message: " + text_value)
+        res.send("Showing message: \"" + text_value + "\"")
     };
 });
 
@@ -88,7 +88,7 @@ app.post('/setmessage', (req, res) => {
     });
 
     //Send the gui the status message to display
-    res.send("Showing message: " + text_value)
+    res.send("Showing message: \"" + text_value + "\"")
 });
 
 //Web socket responses are defined in here
