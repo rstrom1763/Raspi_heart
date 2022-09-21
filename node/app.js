@@ -1,9 +1,11 @@
 const fs = require('fs');
 const express = require('express');
 const app = express();
-const https = require('https')
 const { urlencoded } = require('body-parser');
 const mongoose = require('mongoose');
+const process = require('process')
+const dotenv = require('dotenv')
+dotenv.config();
 
 //Read config into memory and parse as json for use by program
 const config = JSON.parse(fs.readFileSync("./config.json", 'utf8'));
@@ -12,21 +14,41 @@ const config = JSON.parse(fs.readFileSync("./config.json", 'utf8'));
 const { Server } = require("socket.io");
 const io = new Server(config.socket_port);
 
+//Connect to mongodb
+mongoose.connect('mongodb://docker.lan/userdata?retryWrites=true&w=majority', { user: process.env.MONGO_USERNAME, pass: process.env.MONGO_ROOT_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true })
+//Create mongoose user schema
+const userSchema = new mongoose.Schema({
+    username: { type: String, unique: true, required: true },
+    name: { type: String, required: true },
+    email: { type: String, unique: true, required: true },
+    phone_number: { type: String, required: true }
+});
+const User = mongoose.model('User', userSchema);
+
 app.use(express.json());
 app.use(urlencoded({ extended: false }));
 const nocache = require('nocache'); //Disable browser caching
+const { exit } = require('process');
 app.use(nocache());
 app.use(express.static('./'));
 app.disable('etag', false); //Disable etag to help prevent http 304 issues
-//app.listen(config.port);
-https.createServer(
-    {
+
+console.log(process.env.PROTOCOL)
+if (process.env.PROTOCOL == "https") {
+    https.createServer({
         key: fs.readFileSync('privkey.pem'),
         cert: fs.readFileSync('cert.pem'),
         ca: fs.readFileSync('chain.pem'),
-    }, app).listen(config.port, () => {
-        console.log("Listening on port " + config.port + "...")
+    }, app).listen(process.env.PORT, () => {
+        console.log("Listening on port " + process.env.PORT + "...")
     });
+} else if (process.env.PROTOCOL === "http") {
+    app.listen(process.env.PORT);
+} else {
+    console.log("Invalid protocol! Exiting! ")
+    process.exit()
+}
+
 
 heart_status = false;
 text_value = false;
