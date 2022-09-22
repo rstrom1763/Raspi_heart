@@ -15,35 +15,38 @@ const { Server } = require("socket.io");
 const io = new Server(config.socket_port);
 
 //Connect to mongodb
-mongoose.connect('mongodb://docker.lan/userdata?retryWrites=true&w=majority', { user: process.env.MONGO_USERNAME, pass: process.env.MONGO_ROOT_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://docker.lan/userdata?retryWrites=true&w=majority', { user: process.env.MONGO_USERNAME, pass: process.env.MONGO_ROOT_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true }, () => {
+    console.log("Connected to MongoDB! ")
+});
 //Create mongoose user schema
 const userSchema = new mongoose.Schema({
     username: { type: String, unique: true, required: true },
     name: { type: String, required: true },
     email: { type: String, unique: true, required: true },
-    phone_number: { type: String, required: true }
+    phone_number: { type: String, required: true },
+    password: { type: String, required: true }
 });
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema, 'users');
 
 app.use(express.json());
 app.use(urlencoded({ extended: false }));
 const nocache = require('nocache'); //Disable browser caching
-const { exit } = require('process');
 app.use(nocache());
 app.use(express.static('./'));
 app.disable('etag', false); //Disable etag to help prevent http 304 issues
 
-console.log(process.env.PROTOCOL)
 if (process.env.PROTOCOL == "https") {
     https.createServer({
         key: fs.readFileSync('privkey.pem'),
         cert: fs.readFileSync('cert.pem'),
         ca: fs.readFileSync('chain.pem'),
     }, app).listen(process.env.PORT, () => {
-        console.log("Listening on port " + process.env.PORT + "...")
+        console.log("Listening https on port " + process.env.PORT + "...")
     });
 } else if (process.env.PROTOCOL === "http") {
-    app.listen(process.env.PORT);
+    app.listen(process.env.PORT, () => {
+        console.log("Listening http on port " + process.env.PORT + "...")
+    });
 } else {
     console.log("Invalid protocol! Exiting! ")
     process.exit()
@@ -122,3 +125,24 @@ io.on("connection", (socket) => {
     });
 
 });
+
+
+/* This is an example for adding a user to the database
+User.create(
+    {
+        username: "johndoe1812",
+        name: "John",
+        email: "johndoe1812@yahoo.com",
+        phone_number: "912-578-5690",
+        password: "password"
+    }
+)
+
+This is an example of querying the data from MongoDB
+//Getting the query results has to be in the callback
+User.findOne({ "username": "johndoe1812" }, (err, data) => {
+    if (err) { err }
+    console.log(data.email);
+});
+
+*/
