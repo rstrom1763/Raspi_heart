@@ -5,15 +5,15 @@ const { urlencoded } = require('body-parser');
 const mongoose = require('mongoose');
 const process = require('process')
 const dotenv = require('dotenv')
-dotenv.config();
+dotenv.config({ path: "../.env" });
 
 //Create the socketio server and define listening port
 const { Server } = require("socket.io");
 const io = new Server(process.env.SOCKET_PORT);
 
 //Connect to mongodb
-mongoose.connect('mongodb://' + process.env.MONGO_HOST + '/userdata?retryWrites=true&w=majority', { user: process.env.MONGO_USERNAME, pass: process.env.MONGO_ROOT_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true }, () => {
-    console.log("Connected to MongoDB! ")
+mongoose.connect('mongodb://' + process.env.MONGO_HOST + '/userdata?retryWrites=true&w=majority', { user: process.env.MONGO_USERNAME, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true }, () => {
+    console.log("Connected to MongoDB! ");
 });
 //Create mongoose user schema
 const userSchema = new mongoose.Schema({
