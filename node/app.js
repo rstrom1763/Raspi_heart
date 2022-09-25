@@ -7,15 +7,12 @@ const process = require('process')
 const dotenv = require('dotenv')
 dotenv.config();
 
-//Read config into memory and parse as json for use by program
-const config = JSON.parse(fs.readFileSync("./config.json", 'utf8'));
-
 //Create the socketio server and define listening port
 const { Server } = require("socket.io");
-const io = new Server(config.socket_port);
+const io = new Server(process.env.SOCKET_PORT);
 
 //Connect to mongodb
-mongoose.connect('mongodb://docker.lan/userdata?retryWrites=true&w=majority', { user: process.env.MONGO_USERNAME, pass: process.env.MONGO_ROOT_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true }, () => {
+mongoose.connect('mongodb://' + process.env.MONGO_HOST + '/userdata?retryWrites=true&w=majority', { user: process.env.MONGO_USERNAME, pass: process.env.MONGO_ROOT_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true }, () => {
     console.log("Connected to MongoDB! ")
 });
 //Create mongoose user schema
@@ -116,6 +113,17 @@ app.post('/setmessage', (req, res) => {
     res.send("Showing message: \"" + text_value + "\"")
 });
 
+app.get('/getUser/:username', (req, res) => {
+    const username = req.params.username.toLowerCase()
+    User.findOne({ "username": username }, (err, data) => {
+        if (err) { err } else if (data != null) {
+            res.send(data)
+        } else if (data == null) {
+            res.send("Could not find user")
+        }
+    });
+});
+
 //Web socket responses are defined in here
 io.on("connection", (socket) => {
 
@@ -126,8 +134,8 @@ io.on("connection", (socket) => {
 
 });
 
-
-/* This is an example for adding a user to the database
+/*
+//This is an example for adding a user to the database
 User.create(
     {
         username: "johndoe1812",
@@ -138,11 +146,10 @@ User.create(
     }
 )
 
-This is an example of querying the data from MongoDB
+//This is an example of querying the data from MongoDB
 //Getting the query results has to be in the callback
 User.findOne({ "username": "johndoe1812" }, (err, data) => {
     if (err) { err }
     console.log(data.email);
 });
-
 */
