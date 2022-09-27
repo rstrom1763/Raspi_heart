@@ -124,6 +124,23 @@ app.get('/getUser/:username', (req, res) => {
     });
 });
 
+app.post('/createUser', (req, res) => {
+    User.create(
+        {
+            username: req.headers.username,
+            name: req.headers.name,
+            email: req.headers.email,
+            phone_number: req.headers.phone_number,
+            password: req.headers.password
+        }, (err) => { //Callback Function
+            if (err) { res.send(err) }
+            else {
+                res.send("Succesfully created user: " + req.headers.username)
+            }
+        }
+    )
+});
+
 //Web socket responses are defined in here
 io.on("connection", (socket) => {
 
