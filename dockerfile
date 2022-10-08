@@ -9,3 +9,4 @@ RUN npm i && \
     -days 3650 \
     -keyout key.pem -out cert.pem
 CMD node /app/app.js
+

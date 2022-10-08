@@ -1,11 +1,13 @@
 const fs = require('fs');
+const http = require('http')
+const https = require('https')
 const express = require('express');
 const app = express();
 const { urlencoded } = require('body-parser');
 const mongoose = require('mongoose');
 const process = require('process')
 const dotenv = require('dotenv')
-dotenv.config({ path: "../.env" });
+dotenv.config({ path: "./.env" });
 
 //Create the socketio server and define listening port
 const { Server } = require("socket.io");
@@ -32,11 +34,10 @@ app.use(nocache());
 app.use(express.static('./'));
 app.disable('etag', false); //Disable etag to help prevent http 304 issues
 
-if (process.env.PROTOCOL == "https") {
+if (process.env.PROTOCOL === "https") {
     https.createServer({
-        key: fs.readFileSync('privkey.pem'),
-        cert: fs.readFileSync('cert.pem'),
-        ca: fs.readFileSync('chain.pem'),
+        key: fs.readFileSync('key.pem'),
+        cert: fs.readFileSync('cert.pem')
     }, app).listen(process.env.PORT, () => {
         console.log("Listening https on port " + process.env.PORT + "...")
     });
