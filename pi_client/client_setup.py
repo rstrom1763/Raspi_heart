@@ -14,4 +14,4 @@ dict = {'server': server,
 
 jsonstr = json.dumps(dict)
 config.write(jsonstr)
-print(jsonstr)
+print("Here is your config: \n\n" + jsonstr)
