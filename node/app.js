@@ -4,7 +4,6 @@ const https = require('https')
 const express = require('express');
 const app = express();
 const { urlencoded } = require('body-parser');
-const mongoose = require('mongoose');
 const process = require('process')
 const dotenv = require('dotenv')
 dotenv.config({ path: "./.env" });
@@ -12,20 +11,6 @@ dotenv.config({ path: "./.env" });
 //Create the socketio server and define listening port
 const { Server } = require("socket.io");
 const io = new Server(process.env.SOCKET_PORT);
-
-//Connect to mongodb
-mongoose.connect('mongodb://' + process.env.MONGO_HOST + '/userdata?retryWrites=true&w=majority', { user: process.env.MONGO_USERNAME, pass: process.env.MONGO_PASSWORD, useNewUrlParser: true, useUnifiedTopology: true }, () => {
-    console.log("Connected to MongoDB! ");
-});
-//Create mongoose user schema
-const userSchema = new mongoose.Schema({
-    username: { type: String, unique: true, required: true },
-    name: { type: String, required: true },
-    email: { type: String, unique: true, required: true },
-    phone_number: { type: String, required: true },
-    password: { type: String, required: true }
-});
-const User = mongoose.model('User', userSchema, 'users');
 
 app.use(express.json());
 app.use(urlencoded({ extended: false }));
@@ -114,34 +99,6 @@ app.post('/setmessage', (req, res) => {
     res.send("Showing message: \"" + text_value + "\"")
 });
 
-app.get('/getUser/:username', (req, res) => {
-    const username = req.params.username.toLowerCase()
-    User.findOne({ "username": username }, (err, data) => {
-        if (err) { err } else if (data != null) {
-            res.send(data)
-        } else if (data == null) {
-            res.send("Could not find user")
-        }
-    });
-});
-
-app.post('/createUser', (req, res) => {
-    User.create(
-        {
-            username: req.headers.username,
-            name: req.headers.name,
-            email: req.headers.email,
-            phone_number: req.headers.phone_number,
-            password: req.headers.password
-        }, (err) => { //Callback Function
-            if (err) { res.send(err) }
-            else {
-                res.send("Succesfully created user: " + req.headers.username)
-            }
-        }
-    )
-});
-
 //Web socket responses are defined in here
 io.on("connection", (socket) => {
 
@@ -151,23 +108,3 @@ io.on("connection", (socket) => {
     });
 
 });
-
-/*
-//This is an example for adding a user to the database
-User.create(
-    {
-        username: "johndoe1812",
-        name: "John",
-        email: "johndoe1812@yahoo.com",
-        phone_number: "912-578-5690",
-        password: "password"
-    }
-)
-
-//This is an example of querying the data from MongoDB
-//Getting the query results has to be in the callback
-User.findOne({ "username": "johndoe1812" }, (err, data) => {
-    if (err) { err }
-    console.log(data.email);
-});
-*/
