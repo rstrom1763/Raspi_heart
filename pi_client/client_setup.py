@@ -1,4 +1,5 @@
 import json
+from os import system
 
 config = open('./pi_client/client_config.json', 'w')
 
@@ -14,4 +15,7 @@ dict = {'server': server,
 
 jsonstr = json.dumps(dict)
 config.write(jsonstr)
+
+# Show the json config to user
+system('clear')
 print("Here is your config: \n\n" + jsonstr)
