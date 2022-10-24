@@ -38,8 +38,7 @@ dict = {'api_key': api_key,
         'server': server,
         'port': 8081,
         'protocol': 'https',
-        'userid': userid}
-
+}
 jsonstr = json.dumps(dict)
 config.write(jsonstr)
 
