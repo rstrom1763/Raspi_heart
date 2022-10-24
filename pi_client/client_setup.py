@@ -32,7 +32,6 @@ config = open('./pi_client/client_config.json', 'w')
 
 api_key = generate_api_key(15)
 server = input('Server: ').strip()
-userid = input('Userid: ').strip()
 
 dict = {'api_key': api_key,
         'server': server,
