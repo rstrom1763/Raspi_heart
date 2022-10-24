@@ -32,14 +32,12 @@ config = open('./pi_client/client_config.json', 'w')
 
 api_key = generate_api_key(15)
 server = input('Server: ').strip()
-port = input('Port: ').strip()
-protocol = input('Protocol: ').strip()
 userid = input('Userid: ').strip()
 
 dict = {'api_key': api_key,
         'server': server,
-        'port': port,
-        'protocol': protocol,
+        'port': 8081,
+        'protocol': 'https',
         'userid': userid}
 
 jsonstr = json.dumps(dict)
