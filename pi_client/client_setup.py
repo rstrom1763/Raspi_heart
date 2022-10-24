@@ -22,14 +22,22 @@ def sanitize(data):
     return new_string
 
 
+def generate_api_key(length):
+    import string
+    from random import SystemRandom
+    return ''.join(SystemRandom().choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(length))
+
+
 config = open('./pi_client/client_config.json', 'w')
 
+api_key = generate_api_key(15)
 server = input('Server: ').strip()
 port = input('Port: ').strip()
 protocol = input('Protocol: ').strip()
 userid = input('Userid: ').strip()
 
-dict = {'server': server,
+dict = {'api_key': api_key,
+        'server': server,
         'port': port,
         'protocol': protocol,
         'userid': userid}
@@ -40,3 +48,4 @@ config.write(jsonstr)
 # Show the json config to user
 system('clear')
 print("Here is your config: \n\n" + jsonstr)
+print("Share your api key in order for others to use your pi!")
