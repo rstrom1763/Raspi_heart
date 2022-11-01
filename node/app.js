@@ -99,6 +99,13 @@ app.post('/setmessage', (req, res) => {
     res.send("Showing message: \"" + text_value + "\"")
 });
 
+
+//To be used by an ELB to check for health status
+app.get('/health', (req, res) => {
+    res.send("Healthy!")
+});
+
+
 //Web socket responses are defined in here
 io.on("connection", (socket) => {
 
