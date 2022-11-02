@@ -17,6 +17,9 @@ def rainbow_hearts():
     sense = SenseHat()
     sense.low_light = True
 
+    # Makes sure leds are off before starting
+    sense.clear()
+
     # Create variables to hold each RGB colors
 
     # red
