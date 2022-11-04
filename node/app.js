@@ -15,7 +15,6 @@ const io = new Server(process.env.SOCKET_PORT);
 app.use(express.json());
 app.use(urlencoded({ extended: false }));
 const nocache = require('nocache'); //Disable browser caching
-const { Client } = require('socket.io/dist/client');
 app.use(nocache());
 app.use(express.static('./'));
 app.disable('etag', false); //Disable etag to help prevent http 304 issues
