@@ -62,6 +62,7 @@ app.get('/getstatus', (req, res) => {
 //Route that toggles the heart on or off
 app.get('/toggle', (req, res) => {
     heart_status = !heart_status;
+    api_key = req.headers.api_key;
     if (heart_status) {
         res.send("Status: Heart ON ");
     }
@@ -73,24 +74,26 @@ app.get('/toggle', (req, res) => {
     text_value = false
 
     //Send the new status to the Pi so it can act on the new status
-    io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
+    socket_list[api_key].emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
 });
 
 //Route to turn the pi message or heart off
 app.post('/off', (req, res) => {
     heart_status = false;
     text_value = false;
-    io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
+    api_key = req.headers.api_key
+    socket_list[api_key].emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
     res.send('Success')
 });
 
 //Sets that value of the message to be shown
 app.post('/setmessage', (req, res) => {
     text_value = req.headers.text_value
+    api_key = req.headers.api_key
     heart_status = false
 
     //Send new message to the pi through the websocket connection
-    io.sockets.emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
+    socket_list[api_key].emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
 
     //Write message to log file
     fs.appendFile('./messages.log', req.headers.text_value + '\n', (err) => {
@@ -111,11 +114,11 @@ app.get('/health', (req, res) => {
 //Web socket responses are defined in here
 io.on("connection", (socket) => {
 
-    socket_list[socket.id] = socket;
-
     //Sends the status of the heart and message
-    socket.on("getstatus", () => {
+    //Also sets socket_id listing
+    socket.on("getstatus", (data) => {
         socket.emit("setstatus", { "heart_status": heart_status, "text_value": text_value });
+        socket_list[data.api_key] = socket
     });
 
 });

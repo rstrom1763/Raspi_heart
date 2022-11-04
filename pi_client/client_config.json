@@ -1,4 +1,5 @@
 {
     "server": "",
-    "ws_port": ""
+    "ws_port": "",
+    "api_key":""
 }

@@ -158,7 +158,7 @@ def rainbow_hearts():
     try:
         sio.connect(ws_url)
         print("Connected to " + ws_url)
-        sio.emit('getstatus', '')
+        sio.emit('getstatus', {"api_key": config['api_key']})
     except:
         print("Could not connect to " + ws_url)
         exit()
