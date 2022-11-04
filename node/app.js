@@ -120,8 +120,10 @@ io.on("connection", (socket) => {
         socket_list[data.api_key] = socket
     });
 
+    socket.on("disconnect", (socket) => {
+        delete socket_list[socket.id];
+    });
+    
 });
 
-socket.on("disconnect", (socket) => {
-    delete socket_list[socket.id];
-});
+
