@@ -8,9 +8,11 @@ const process = require('process')
 const dotenv = require('dotenv')
 dotenv.config({ path: "./.env" });
 
+
 //Create the socketio server and define listening port
 const { Server } = require("socket.io");
 const io = new Server(process.env.SOCKET_PORT);
+
 
 app.use(express.json());
 app.use(urlencoded({ extended: false }));
@@ -19,6 +21,7 @@ app.use(nocache());
 app.use(express.static('./'));
 app.disable('etag', false); //Disable etag to help prevent http 304 issues
 socket_list = {}
+
 
 if (process.env.PROTOCOL === "https") {
     https.createServer({
@@ -40,10 +43,12 @@ if (process.env.PROTOCOL === "https") {
 heart_status = false;
 text_value = false;
 
+
 //Send the html page for the web gui
 app.get('/', (req, res) => {
     res.send(fs.readFileSync('./static/index.html', 'utf8'));
 });
+
 
 //Sends the current status of the pi
 app.get('/getstatus', (req, res) => {
@@ -57,6 +62,7 @@ app.get('/getstatus', (req, res) => {
         res.send("Showing message: \"" + text_value + "\"")
     };
 });
+
 
 //Route that toggles the heart on or off
 app.get('/toggle', (req, res) => {
@@ -76,6 +82,7 @@ app.get('/toggle', (req, res) => {
     socket_list[api_key].emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
 });
 
+
 //Route to turn the pi message or heart off
 app.post('/off', (req, res) => {
     heart_status = false;
@@ -84,6 +91,7 @@ app.post('/off', (req, res) => {
     socket_list[api_key].emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
     res.send('Success')
 });
+
 
 //Sets that value of the message to be shown
 app.post('/setmessage', (req, res) => {
@@ -113,17 +121,19 @@ app.get('/health', (req, res) => {
 //Web socket responses are defined in here
 io.on("connection", (socket) => {
 
-    //Sends the status of the heart and message
-    //Also sets socket_id listing
+    //Message sent when pi connects to get current status
     socket.on("getstatus", (data) => {
+        //Sends message to pi with the status
         socket.emit("setstatus", { "heart_status": heart_status, "text_value": text_value });
+        //Add new socket to the list for messaging later
         socket_list[data.api_key] = socket
     });
 
+    //What to do when a socket disconnects
     socket.on("disconnect", (socket) => {
+        //Remove socket from the list
         delete socket_list[socket.id];
     });
-    
-});
 
+});
 
