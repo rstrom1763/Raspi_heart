@@ -40,8 +40,7 @@ if (process.env.PROTOCOL === "https") {
 }
 
 
-heart_status = false;
-text_value = false;
+statuses = {};
 
 
 //Send the html page for the web gui
@@ -52,6 +51,9 @@ app.get('/', (req, res) => {
 
 //Sends the current status of the pi
 app.get('/getstatus', (req, res) => {
+    api_key = req.headers.api_key;
+    heart_status = statuses[api_key].heart_status
+    text_value = statuses[api_key].text_value
     if (heart_status === true) {
         res.send("Status: Heart ON ");
     };
@@ -66,17 +68,17 @@ app.get('/getstatus', (req, res) => {
 
 //Route that toggles the heart on or off
 app.get('/toggle', (req, res) => {
-    heart_status = !heart_status;
     api_key = req.headers.api_key;
+    statuses[api_key].heart_status = !statuses[api_key].heart_status
+    statuses[api_key].text_value = false;
+    heart_status = statuses[api_key].heart_status
+    text_value = statuses[api_key].text_value
     if (heart_status) {
         res.send("Status: Heart ON ");
     }
     if (heart_status === false) {
         res.send("Status: Heart OFF ");
     }
-
-    //Text will always be false since this toggles the heart
-    text_value = false
 
     //Send the new status to the Pi so it can act on the new status
     socket_list[api_key].emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
@@ -85,9 +87,11 @@ app.get('/toggle', (req, res) => {
 
 //Route to turn the pi message or heart off
 app.post('/off', (req, res) => {
-    heart_status = false;
-    text_value = false;
-    api_key = req.headers.api_key
+    api_key = req.headers.api_key;
+    statuses[api_key].heart_status = false;
+    statuses[api_key].text_value = false;
+    heart_status = statuses[api_key].heart_status;
+    text_value = statuses[api_key].text_value;
     socket_list[api_key].emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
     res.send('Success')
 });
@@ -95,9 +99,11 @@ app.post('/off', (req, res) => {
 
 //Sets that value of the message to be shown
 app.post('/setmessage', (req, res) => {
-    text_value = req.headers.text_value
-    api_key = req.headers.api_key
-    heart_status = false
+    api_key = req.headers.api_key;
+    statuses[api_key].heart_status = false;
+    statuses[api_key].text_value = req.headers.text_value;
+    text_value = statuses[api_key].text_value
+    heart_status = statuses[api_key].heart_status
 
     //Send new message to the pi through the websocket connection
     socket_list[api_key].emit('setstatus', { "heart_status": heart_status, "text_value": text_value });
@@ -123,8 +129,11 @@ io.on("connection", (socket) => {
 
     //Message sent when pi connects to get current status
     socket.on("getstatus", (data) => {
+        if (!(data.api_key in statuses)) {
+            statuses[data.api_key] = { heart_status: false, text_value: false };
+        };
         //Sends message to pi with the status
-        socket.emit("setstatus", { "heart_status": heart_status, "text_value": text_value });
+        socket.emit("setstatus", { "heart_status": statuses[data.api_key].heart_status, "text_value": statuses[data.api_key].text_value });
         //Add new socket to the list for messaging later
         socket_list[data.api_key] = socket
     });
