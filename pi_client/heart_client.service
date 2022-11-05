@@ -2,7 +2,7 @@
 Description=Raspberry Pi heart client
 
 [Service]
-ExecStart=/bin/bash -c [$(cat /var/path.txt)/start.sh]
+ExecStart=/bin/sh -c '$(cat /var/path.txt)/start.sh'
 Restart=always
 
 [Install]
