@@ -46,13 +46,10 @@ config.write(jsonstr)
 
 # Commands to install the service
 commands = ['pip3 install -r requirements.txt',
-            
             'systemctl stop heart_client',
             'rm /etc/systemd/system/heart_client.service',
             'cp ./heart_client.service /etc/systemd/system/',
-            'mkdir /etc/raspi_heart/',
-            'cp ./start.sh /etc/raspi_heart/',
-            'cp ./PiClient.py /etc/raspi_heart/',
+            'cp ../../Raspi_heart /etc/',
             'systemctl daemon-reload',
             'systemctl start heart_client.service',
             'systemctl enable heart_client.service']
@@ -63,9 +60,6 @@ for command in commands:
         system(command)
     except:
         print("Could not execute '" + command + "'")
-
-# Saves current path to a file so that the service can find this path
-system('pwd > /var/path.txt')
 
 # Show the json config to user
 system('clear')

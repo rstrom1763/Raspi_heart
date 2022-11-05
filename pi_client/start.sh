@@ -1,3 +1,4 @@
 #!/bin/bash
 
-python3 /etc/raspi_heart/PiClient.py
+cd /etc/Raspi_heart/pi_client
+python3 ./PiClient.py

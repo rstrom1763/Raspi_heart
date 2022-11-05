@@ -5,7 +5,7 @@ def rainbow_hearts():
     from sense_hat import SenseHat
     import random
 
-    config = open('./pi_client/client_config.json', 'r').read()
+    config = open('./client_config.json', 'r').read()
     config = json.loads(config)
     ws_url = ("ws://"+config["server"]+":"+config["ws_port"])
     global heart_status
