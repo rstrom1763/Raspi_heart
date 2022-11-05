@@ -28,9 +28,6 @@ def generate_api_key(length):
     return ''.join(SystemRandom().choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(length))
 
 
-config = open('./client_config.json', 'w')
-
-
 api_key = generate_api_key(15)
 server = input('Server: ').strip()
 
@@ -42,7 +39,9 @@ dict = {'api_key': api_key,
         'ws_port': '8765'
 }
 jsonstr = json.dumps(dict)
-config.write(jsonstr)
+with open('./client_config.json', 'w') as f:
+    f.write(jsonstr)
+
 
 # Commands to install the service
 commands = ['pip3 install -r requirements.txt',
