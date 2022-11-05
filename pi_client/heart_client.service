@@ -1,5 +1,7 @@
 [Unit]
 Description=Raspberry Pi heart client
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 ExecStart=/bin/bash /etc/Raspi_heart/pi_client/start.sh
