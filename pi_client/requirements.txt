@@ -1,0 +1,3 @@
+python-socketio
+sense-emu
+sense-hat
