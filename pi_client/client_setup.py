@@ -49,7 +49,7 @@ commands = ['pip3 install -r requirements.txt',
             'systemctl stop heart_client',
             'rm /etc/systemd/system/heart_client.service',
             'cp ./heart_client.service /etc/systemd/system/',
-            'cp ../../Raspi_heart /etc/',
+            'cp -r ../../Raspi_heart /etc/',
             'systemctl daemon-reload',
             'systemctl start heart_client.service',
             'systemctl enable heart_client.service']
