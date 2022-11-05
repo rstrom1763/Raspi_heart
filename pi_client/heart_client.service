@@ -1,0 +1,9 @@
+[Unit]
+Description=Raspberry Pi heart client
+
+[Service]
+ExecStart=/bin/bash $(cat /var/path.txt)/start.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

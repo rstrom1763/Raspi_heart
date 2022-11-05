@@ -28,10 +28,12 @@ def generate_api_key(length):
     return ''.join(SystemRandom().choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(length))
 
 
-config = open('./pi_client/client_config.json', 'w')
+config = open('./client_config.json', 'w')
+
 
 api_key = generate_api_key(15)
 server = input('Server: ').strip()
+
 
 dict = {'api_key': api_key,
         'server': server,
@@ -41,6 +43,26 @@ dict = {'api_key': api_key,
 }
 jsonstr = json.dumps(dict)
 config.write(jsonstr)
+
+# Commands to install the service
+commands = ['pip3 install -r requirements.txt',
+            
+            'systemctl stop heart_client',
+            'rm /etc/systemd/system/heart_client.service',
+            'cp ./heart_client.service /etc/systemd/system/',
+            'systemctl daemon-reload',
+            'systemctl start heart_client.service',
+            'systemctl enable heart_client.service']
+
+# Execute the commands
+for command in commands:
+    try:
+        system(command)
+    except:
+        print("Could not execute '" + command + "'")
+
+# Saves current path to a file so that the service can find this path
+system('pwd > /var/path.txt')
 
 # Show the json config to user
 system('clear')
