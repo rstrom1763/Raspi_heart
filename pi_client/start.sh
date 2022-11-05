@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Success" > /testing.txt
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
