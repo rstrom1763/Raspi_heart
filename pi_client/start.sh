@@ -5,4 +5,4 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 cd $(cat /var/path.txt)
-python3 ./PiClient.py
+python3 /etc/PiClient.py
