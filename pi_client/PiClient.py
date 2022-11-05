@@ -5,6 +5,7 @@ def rainbow_hearts():
     from sense_hat import SenseHat
     import random
 
+    time.sleep(5)
     config = open('./client_config.json', 'r').read()
     config = json.loads(config)
     ws_url = ("ws://"+config["server"]+":"+config["ws_port"])
