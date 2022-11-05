@@ -42,7 +42,7 @@ dict = {'api_key': api_key,
         'ws_port': '8765'
 }
 jsonstr = json.dumps(dict)
-config.write(jsonstr).close()
+config.write(jsonstr)
 
 # Commands to install the service
 commands = ['pip3 install -r requirements.txt',
