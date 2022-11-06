@@ -21,6 +21,7 @@ app.use(nocache());
 app.use(express.static('./'));
 app.disable('etag', false); //Disable etag to help prevent http 304 issues
 socket_list = {}
+statuses = {};
 
 
 if (process.env.PROTOCOL === "https") {
@@ -38,15 +39,6 @@ if (process.env.PROTOCOL === "https") {
     console.log("Invalid protocol! Exiting! ")
     process.exit()
 }
-
-
-statuses = {};
-
-
-//Send the html page for the web gui
-app.get('/', (req, res) => {
-    res.send(fs.readFileSync('./static/index.html', 'utf8'));
-});
 
 
 //Sends the current status of the pi
