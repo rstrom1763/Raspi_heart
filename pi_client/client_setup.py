@@ -11,7 +11,7 @@ def sanitize(data):
     allowed_chars = list(string.ascii_uppercase)
     for char in string.digits: allowed_chars.append(char)
     for num in range(10): allowed_chars.append(num)
-    for char in ['-','.',' ','/']: allowed_chars.append(char)
+    for char in ['-','.',' ','/',':']: allowed_chars.append(char)
 
     new_string = ''
     for char in data:
