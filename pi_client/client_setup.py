@@ -29,7 +29,7 @@ def generate_api_key(length):
 
 
 api_key = generate_api_key(15)
-server = input('Server: ').strip()
+server = sanitize(input('Server: ')).strip()
 
 
 dict = {'api_key': api_key,
