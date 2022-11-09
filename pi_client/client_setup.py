@@ -27,8 +27,19 @@ def generate_api_key(length):
     from random import SystemRandom
     return ''.join(SystemRandom().choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(length))
 
+try:
+    config = open('./client_config.json','r')
+    json.load(config)
+    config.close()
+except:
+    api_key = generate_api_key(15)
 
-api_key = generate_api_key(15)
+if config['api_key'] == '':
+    api_key = generate_api_key(15)
+else:
+    api_key = config['api_key']
+
+
 server = sanitize(input('Server: ')).strip()
 
 
