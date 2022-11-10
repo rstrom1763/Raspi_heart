@@ -21,12 +21,14 @@ def sanitize(data):
             new_string += ''
     return new_string
 
-
+# Function to generate an API key to use with the server
 def generate_api_key(length):
     import string
     from random import SystemRandom
     return ''.join(SystemRandom().choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(length))
 
+# Read the existing config
+# If it fails, generate API key
 try:
     config = open('./client_config.json','r')
     json.load(config)
@@ -34,21 +36,25 @@ try:
 except:
     api_key = generate_api_key(15)
 
+# If API key is blank, generate one 
+# If not, use the existing key
 if config['api_key'] == '':
     api_key = generate_api_key(15)
 else:
     api_key = config['api_key']
 
-
+# Ask for the server to connect the websocket to
 server = sanitize(input('Server: ')).strip()
 
-
+#Build the config as a dict to be later turned into JSON
 dict = {'api_key': api_key,
         'server': server,
         'port': 8081,
         'protocol': 'https',
         'ws_port': '8765'
 }
+
+# Output the config as a JSON and write to disk
 jsonstr = json.dumps(dict)
 with open('./client_config.json', 'w') as f:
     f.write(jsonstr)
