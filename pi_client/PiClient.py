@@ -136,6 +136,7 @@ def rainbow_hearts():
                     purple_heart, aqua_heart, green_heart, yellow_heart]
 
     # Create socketio client object
+    global sio
     sio = socketio.Client()
 
     # Define event listener(s) for socket
@@ -166,7 +167,13 @@ def rainbow_hearts():
 
     # Turns heart to off when button is pressed
     def turn_off_heart():
-        sio.emit('turn_off_heart',{})
+        global heart_status
+        heart_status = False
+        global text_value
+        text_value = False
+        sense.clear()
+        global sio
+        sio.emit('turn_off_heart', {"api_key": config['api_key']})
 
     # When button is pressed, trigger the function turn_off_heart
     sense.stick.direction_middle = turn_off_heart
