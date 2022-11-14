@@ -164,6 +164,13 @@ def rainbow_hearts():
         print("Could not connect to " + ws_url)
         exit()
 
+    # Turns heart to off when button is pressed
+    def turn_off_heart():
+        sio.emit('turn_off_heart',{})
+
+    # When button is pressed, trigger the function turn_off_heart
+    sense.stick.direction_middle = turn_off_heart
+
     # Loop through the colors if the status is True
     while True:
         for color in heart_colors:

@@ -130,6 +130,13 @@ io.on("connection", (socket) => {
         socket_list[data.api_key] = socket
     });
 
+    //When user presses button on Pi it clears all statuses to turn off heart
+    socket.on("turn_off_heart", (data) => {
+        if (data.api_key in statuses) {
+            statuses[data.api_key] = { heart_status: false, text_value: false };
+        }
+    })
+
     //What to do when a socket disconnects
     socket.on("disconnect", (socket) => {
         //Remove socket from the list
