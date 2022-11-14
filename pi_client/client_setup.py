@@ -30,21 +30,24 @@ def generate_api_key(length):
 # Read the existing config
 # If it fails, generate API key
 try:
-    config = open('./client_config.json','r')
-    json.load(config)
-    config.close()
+    config = open('./client_config.json','r').read()
+    config = json.loads(config)
 except:
     api_key = generate_api_key(15)
 
 # If API key is blank, generate one 
 # If not, use the existing key
-if config['api_key'] == '':
-    api_key = generate_api_key(15)
-else:
+if 'api_key' in config:
     api_key = config['api_key']
+else:
+    api_key = generate_api_key(15)
 
 # Ask for the server to connect the websocket to
-server = sanitize(input('Server: ')).strip()
+# Use previously existing server if possible
+if 'server' in config:
+    server = config['server']
+else:
+    server = sanitize(input('Server: ')).strip()
 
 #Build the config as a dict to be later turned into JSON
 dict = {'api_key': api_key,
