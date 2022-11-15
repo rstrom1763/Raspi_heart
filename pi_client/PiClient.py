@@ -130,10 +130,33 @@ def rainbow_hearts():
         e, e, pr, pr, pr, e, e, e,
         e, e, e, pr, e, e, e, e
     ]
+    not_connected = [
+        r, e, e, e, e, e, e, r,
+        e, e, e, e, e, e, e, e,
+        e, e, e, e, e, e, e, e,
+        e, e, e, r, r, e, e, e,
+        e, e, e, r, r, e, e, e,
+        e, e, e, e, e, e, e, e,
+        e, e, e, e, e, e, e, e,
+        r, e, e, e, e, e, e, r
+    ]
+    connected = [
+        g, e, e, e, e, e, e, g,
+        e, e, e, e, e, e, e, e,
+        e, e, e, e, e, e, e, e,
+        e, e, e, g, g, e, e, e,
+        e, e, e, g, g, e, e, e,
+        e, e, e, e, e, e, e, e,
+        e, e, e, e, e, e, e, e,
+        g, e, e, e, e, e, e, g
+    ]
 
     # List of all of the heart colors
     heart_colors = [red_heart, pink_heart, orange_heart, blue_heart,
                     purple_heart, aqua_heart, green_heart, yellow_heart]
+
+    # Set pixels to initially show red not connected
+    sense.set_pixels(not_connected)
 
     # Create socketio client object
     global sio
@@ -159,7 +182,9 @@ def rainbow_hearts():
     # Connect to the websocket
     try:
         sio.connect(ws_url)
+        sense.set_pixels(connected)
         print("Connected to " + ws_url)
+        time.sleep(1.5)
         sio.emit('getstatus', {"api_key": config['api_key']})
     except:
         print("Could not connect to " + ws_url)
