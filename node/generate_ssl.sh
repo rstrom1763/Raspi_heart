@@ -1,2 +1,0 @@
-#!/bin/bash
-sudo apt update && sudo apt install openssl -y && openssl req -newkey rsa:2048 -new -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -days 3650 -keyout key.pem -out cert.pem
