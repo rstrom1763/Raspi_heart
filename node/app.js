@@ -11,7 +11,7 @@ dotenv.config({ path: "./.env" });
 
 //Create the socketio server and define listening port
 const { Server } = require("socket.io");
-const io = new Server(process.env.SOCKET_PORT);
+const io = new Server(process.env.SOCKET_PORT, ping_timeout=60);
 
 
 app.use(express.json());
