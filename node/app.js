@@ -11,7 +11,7 @@ dotenv.config({ path: "./.env" });
 
 //Create the socketio server and define listening port
 const { Server } = require("socket.io");
-const io = new Server(process.env.SOCKET_PORT, ping_timeout=60);
+const io = new Server(process.env.SOCKET_PORT, ping_timeout = 60);
 
 
 app.use(express.json());
@@ -113,6 +113,12 @@ app.post('/setmessage', (req, res) => {
 //To be used by an ELB to check for health status
 app.get('/health', (req, res) => {
     res.send("Healthy!")
+});
+
+
+//Administrative route to show all of the the connected sockets as JSON in browser
+app.get('/sockets', (req, res) => {
+    res.send(JSON.stringify(socket_list));
 });
 
 
