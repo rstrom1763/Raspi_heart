@@ -1,6 +1,7 @@
 import json
 from os import system
 
+# Self made string sanitizer. Needs to be replaced with better solution
 def sanitize(data):
     data_type = str(type(data))
     if data_type == '<class \'int\'>':
