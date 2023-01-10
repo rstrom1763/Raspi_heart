@@ -14,16 +14,19 @@ const { Server } = require("socket.io");
 const io = new Server(process.env.SOCKET_PORT, ping_timeout = 60);
 
 
-app.use(express.json());
+app.use(express.json()); //Express json middleware
 app.use(urlencoded({ extended: false }));
 const nocache = require('nocache'); //Disable browser caching
-app.use(nocache());
-app.use(express.static('./'));
+app.use(nocache()); //Disable browser caching
+app.use(express.static('./')); //Directory for pulling static files from
 app.disable('etag', false); //Disable etag to help prevent http 304 issues
-socket_list = {}
-statuses = {};
 
 
+socket_list = {}; //This will hold all of the sockets that will be created by clients
+statuses = {}; //This will hold the status of each client
+
+
+//Start the server on either http or https
 if (process.env.PROTOCOL === "https") {
     https.createServer({
         key: fs.readFileSync('key.pem'),
